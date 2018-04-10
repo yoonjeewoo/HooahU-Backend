@@ -2,7 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 // const mysql = require('mysql');
+const cors = require('cors');
 const config = require('./config');
+
 // const conn = mysql.createConnection(config);
 
 /* =======================
@@ -14,6 +16,7 @@ const port = process.env.PORT || 3000;
  EXPRESS CONFIGURATION
  ==========================*/
 const app = express();
+app.use(cors())
 // process.on('uncaughtException', function(err) {
 // 	console.log('Caught exception: ' + err);
 // });
