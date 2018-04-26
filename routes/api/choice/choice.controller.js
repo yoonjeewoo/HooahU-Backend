@@ -22,7 +22,7 @@ exports.createComment = (req, res) => {
 exports.getCommentByChoiceId = (req, res) => {
 	const { choice_id } = req.params;
 	conn.query(
-		'SELECT * FROM ChoiceComment WHERE choice_id = ?',
+		'SELECT C.id, U.id as user_id, U.nickname, C.choice_id, C.`comment`, C.`created_at` FROM ChoiceComment as C join Users as U on U.id = C.user_id WHERE C.choice_id = ?',
 		[choice_id],
 		(err, result) => {
 			if (err) throw err;
