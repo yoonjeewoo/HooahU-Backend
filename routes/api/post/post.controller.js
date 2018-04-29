@@ -9,7 +9,7 @@ AWS.config.region = 'ap-northeast-2';
 const s3 = new AWS.S3();
 
 exports.createPost = (req, res) => {
-	const { content, post_type, pic_list } = req.body;
+	const { content, post_type, pic_list ,tags} = req.body;
 	let pic_input = (result, pic, index) => {
 		return new Promise((resolve, reject) => {
 			const picKey = d.getFullYear() + '_'
