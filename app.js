@@ -27,7 +27,7 @@ app.use(function (req, res, next) {
 	next();
 });
 // parse JSON and url-encoded query
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '100mb' }));
 app.use(bodyParser.json());
 
 
