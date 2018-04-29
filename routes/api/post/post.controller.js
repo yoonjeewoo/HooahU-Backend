@@ -41,7 +41,7 @@ exports.createPost = (req, res) => {
 	let tags_input = (result, tags) => {
 		return new Promise((resolve, reject) => {
 			tags.forEach((tag) => {
-				conn.query('INSERT INTO Tags(item_id, title) VALUES(?, ?)',[result.insertId, tag],(err) => {
+				conn.query('INSERT INTO Tags(post_id, title) VALUES(?, ?)',[result.insertId, tag],(err) => {
 					if (err) throw err;
 					resolve();
 				})
