@@ -7,7 +7,6 @@ const conn = mysql.createConnection(config);
 const AWS = require('aws-sdk');
 AWS.config.region = 'ap-northeast-2';
 const s3 = new AWS.S3();
-const crypto = require("crypto");
 
 exports.createPost = (req, res) => {
 	const { content, post_type, pic_list } = req.body;
