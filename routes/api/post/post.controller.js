@@ -10,6 +10,10 @@ const s3 = new AWS.S3();
 
 exports.createPost = (req, res) => {
 	const { content, post_type, pic_list ,tags} = req.body;
+	
+	const d = new Date();
+	d.setUTCHours(d.getUTCHours());
+
 	let pic_input = (result, pic, index) => {
 		return new Promise((resolve, reject) => {
 			const picKey = d.getFullYear() + '_'
@@ -29,7 +33,7 @@ exports.createPost = (req, res) => {
 					if (err) reject(err);
 				} else {
 					// console.log(response)
-					conn.query('INSERT INTO Images(post_id, img_url) VALUES(?, ?, ?)', [result.insertId, picUrl], (err) => {
+					conn.query('INSERT INTO Images(post_id, img_url) VALUES(?, ?)', [result.insertId, picUrl], (err) => {
 						if (err) reject(err);
 						resolve();
 					})
