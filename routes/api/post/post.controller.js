@@ -72,16 +72,54 @@ exports.createPost = (req, res) => {
 	)
 }
 
-exports.getPostList = (req, res) => {
+function pushImages(post_id) {
+	return new Promise((resolve, reject) => {
+		conn.query(
+			"SELECT * FROM Images WHERE post_id = ?",
+			[post_id],
+			(err, result) => {
+				if (err) reject();
+				resolve(result);
+			}
+		)
+	});
+}
+function returnObject(imagesArray, e) {
+	return new Promise((resolve, reject) => {
+		let object = {
+			id: e.id,
+            nickname: e.nickname,
+            content: e.content,
+			created_at: e.created_at,
+            images: imagesArray
+		};
+		resolve(object);
+	});
+}
+async function createObject(ret, result) {
+	for (const e of ret) {
+        imagesArray = await pushImages(e.id);
+        object = await returnObject(imagesArray, e);
+		await result.push(object);
+	}
+	return result;
+}
+async function createPostObject(user_id, req, res) {
+	result = [];
 	conn.query(
-		`SELECT Posts.id, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id WHERE Posts.post_type=${req.query.post_type}`,
-		(err, result) => {
+        `SELECT Posts.id, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id WHERE Posts.post_type=${req.query.post_type}`,
+        async (err, ret) => {
 			if (err) throw err;
-			return res.status(200).json({
+			result = await createObject(ret, result);
+			await res.status(200).json({
 				result
 			})
 		}
 	)
+};
+
+exports.getPostList = (req, res) => {
+    createPostObject(req.decoded._id, req, res);
 }
 
 exports.createComment = (req, res) => {

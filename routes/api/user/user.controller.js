@@ -15,4 +15,4 @@ exports.getUserInfo = (req, res) => {
 			})
 		}
 	)
-}
+};
