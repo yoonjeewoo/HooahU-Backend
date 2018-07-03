@@ -107,8 +107,21 @@ async function createObject(ret, result) {
 async function createPostObject(user_id, req, res) {
 	result = [];
 	conn.query(
-        `SELECT Posts.id, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id WHERE Posts.post_type=${req.query.post_type}`,
+        `SELECT Posts.id, profile_img, post_type, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id WHERE Posts.post_type=${req.query.post_type} ORDER BY Posts.created_at DESC`,
         async (err, ret) => {
+			if (err) throw err;
+			result = await createObject(ret, result);
+			await res.status(200).json({
+				result
+			})
+		}
+	)
+};
+async function createPostObjectAll(user_id, req, res) {
+	result = [];
+	conn.query(
+		`SELECT Posts.id, profile_img, post_type, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id ORDER BY Posts.created_at DESC`,
+		async (err, ret) => {
 			if (err) throw err;
 			result = await createObject(ret, result);
 			await res.status(200).json({
@@ -119,7 +132,11 @@ async function createPostObject(user_id, req, res) {
 };
 
 exports.getPostList = (req, res) => {
-    createPostObject(req.decoded._id, req, res);
+  createPostObject(req.decoded._id, req, res);
+}
+
+exports.getAllPost = (req, res) => {
+	createPostObjectAll(req.decoded._id, req, res);
 }
 
 exports.createComment = (req, res) => {
