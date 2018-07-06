@@ -88,6 +88,7 @@ function returnObject(imagesArray, e) {
 	return new Promise((resolve, reject) => {
 		let object = {
 			id: e.id,
+			profile_img: e.profile_img,
             nickname: e.nickname,
             content: e.content,
 			created_at: e.created_at,
