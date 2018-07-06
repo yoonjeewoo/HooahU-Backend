@@ -89,10 +89,11 @@ function returnObject(imagesArray, e) {
 		let object = {
 			id: e.id,
 			profile_img: e.profile_img,
-            nickname: e.nickname,
-            content: e.content,
+			nickname: e.nickname,
+			content: e.content,
+			post_type: e.post_type,
 			created_at: e.created_at,
-            images: imagesArray
+			images: imagesArray
 		};
 		resolve(object);
 	});
