@@ -20,7 +20,7 @@ exports.getLikeCount = (post_id) => {
 exports.getCommentByPostId = (post_id) => {
     return new Promise((resolve, reject) => {
         conn.query(
-            "SELECT * FROM Comments WHERE post_id = ?",
+            "SELECT Comments.id, user_id, nickname, profile_img, post_id, content, created_at FROM Comments JOIN Users ON Comments.user_id = Users.id WHERE post_id = ?",
             [post_id],
             (err, result) => {
                 if (err) reject(err);
