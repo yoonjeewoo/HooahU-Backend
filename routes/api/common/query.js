@@ -92,3 +92,16 @@ exports.getImagesByPostId = (post_id) => {
         )
     })
 }
+
+exports.getTagsByPostId = (post_id) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            "SELECT * FROM Tags WHERE post_id = ?",
+            [post_id],
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
+    })
+}

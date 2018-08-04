@@ -81,6 +81,7 @@ exports.getPostList = async(req, res) => {
 			result[i].images = await query.getImagesByPostId(result[i].id);
 			result[i].comments = await query.getCommentByPostId(result[i].id);
 			result[i].like_cnt = await query.getLikeCount(result[i].id);
+			result[i].tags = await query.getTagsByPostId(result[i].id);
 		}
 		return res.status(200).json({
 			result
@@ -100,6 +101,7 @@ exports.getAllPost = async(req, res) => {
 			result[i].images = await query.getImagesByPostId(result[i].id);
 			result[i].comments = await query.getCommentByPostId(result[i].id);
 			result[i].like_cnt = await query.getLikeCount(result[i].id);
+			result[i].tags = await query.getTagsByPostId(result[i].id);
 		}
 		return res.status(200).json({
 			result
