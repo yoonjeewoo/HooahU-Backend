@@ -74,5 +74,6 @@ router.post('/login', controller.login);
  * }
  */
 router.get('/username/test', controller.testUsername);
+router.get('/email/test', controller.testEmail);
 
 module.exports = router;

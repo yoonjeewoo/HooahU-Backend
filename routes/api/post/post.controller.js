@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const mysql = require('mysql');
 const config = require('../../../config');
 const conn = mysql.createConnection(config);
+const query = require('../common/query');
 
 const AWS = require('aws-sdk');
 AWS.config.region = 'ap-northeast-2';
@@ -100,7 +101,8 @@ function returnObject(imagesArray, e) {
 }
 async function createObject(ret, result) {
 	for (const e of ret) {
-        imagesArray = await pushImages(e.id);
+				imagesArray = await pushImages(e.id);
+				// comments = await query.getCommentByPostId(e.post_id);
         object = await returnObject(imagesArray, e);
 		await result.push(object);
 	}
@@ -113,6 +115,7 @@ async function createPostObject(user_id, req, res) {
         async (err, ret) => {
 			if (err) throw err;
 			result = await createObject(ret, result);
+			result.like_cnt = await query.getLikeCount(user_id, post_id);
 			await res.status(200).json({
 				result
 			})
@@ -154,4 +157,41 @@ exports.createComment = (req, res) => {
 			})
 		}
 	)
+}
+
+// 좋아요
+exports.likePost = (req, res) => {
+	const { user_id } = req.decoded._id;
+	const { post_id } = req.params;
+	conn.query(
+		"INSERT INTO Likes(user_id, post_id) VALUES(?, ?)",
+		[user_id, post_id],
+		(err) => {
+            if (err) return res.status(406).json({ err });
+            return res.status(200).json({
+                message: 'Successfully liked post'
+            })
+		}
+	)
+}
+
+exports.isLiked = (req, res) => {
+    const { user_id } = req.decoded._id;
+    const { post_id } = req.params;
+    conn.query(
+        "SELECT * FROM Likes WHERE user_id = ? and post_id = ?",
+        [user_id, post_id],
+        (err, result) => {
+            if (err) return res.status(406).json({ err });
+            if (result.length == 0) {
+                return res.status(200).json({
+                    isLiked: false
+                })
+            } else {
+                return res.status(200).json({
+                    isLiked: true
+                })
+            }
+        }
+    )
 }

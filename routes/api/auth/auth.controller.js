@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const mysql = require('mysql');
 const config = require('../../../config');
 const conn = mysql.createConnection(config);
+const query = require('../../api/common/query');
 
 exports.register = (req, res) => {
 	const secret = req.app.get('jwt-secret');
@@ -83,22 +84,28 @@ exports.login = (req, res) => {
 	)
 };
 
-exports.testUsername = (req, res) => {
-	// console.log(req.query.username);
-	conn.query(
-		'SELECT * FROM Users WHERE username=?',
-		[req.query.username],
-		(err, result) => {
-			if (err) throw err;
-			if (result.length == 0) {
-				return res.status(200).json({
-					message: 'username checked'
-				})
-			} else {
-				return res.status(406).json({
-					message: 'username already exists'
-				})
-			}
-		}
-	)
+exports.testUsername = async (req, res) => {
+	let user = await query.getUserByNickname(req.query.nickname);
+	if (user.length == 0) {
+		return res.status(200).json({
+			isExists: false
+		})
+	} else {
+		return res.status(200).json({
+			isExists: true
+		})
+	}
+}
+
+exports.testEmail = async (req, res) => {
+	let user = await query.getUserByEmail(req.query.email);
+	if (user.length == 0) {
+		return res.status(200).json({
+			isExists: false
+		})
+	} else {
+		return res.status(200).json({
+			isExists: true
+		})
+	}
 }
