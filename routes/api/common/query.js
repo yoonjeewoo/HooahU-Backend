@@ -23,7 +23,7 @@ exports.getCommentByPostId = (post_id) => {
             "SELECT * FROM Comments WHERE post_id = ?",
             [post_id],
             (err, result) => {
-                if (err) reject();
+                if (err) reject(err);
                 resolve(result);
             }
         )
@@ -49,9 +49,46 @@ exports.getUserByEmail = (email) => {
             "SELECT * FROM Users WHERE email = ?",
             [email],
             (err, result) => {
-                if (err) reject();
+                if (err) reject(err);
                 resolve(result);
             }
+        )
+    })
+}
+
+exports.getPostListByPostType = (post_type) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            `SELECT Posts.id, profile_img, post_type, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id WHERE Posts.post_type=${post_type} ORDER BY Posts.created_at DESC`,
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
+    })
+}
+
+exports.getAllPostList = () => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            `SELECT Posts.id, profile_img, post_type, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id ORDER BY Posts.created_at DESC`,
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
+    })
+}
+
+exports.getImagesByPostId = (post_id) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            "SELECT * FROM Images WHERE post_id = ?",
+            [post_id],
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            } 
         )
     })
 }

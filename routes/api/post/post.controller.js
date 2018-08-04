@@ -73,75 +73,42 @@ exports.createPost = (req, res) => {
 	)
 }
 
-function pushImages(post_id) {
-	return new Promise((resolve, reject) => {
-		conn.query(
-			"SELECT * FROM Images WHERE post_id = ?",
-			[post_id],
-			(err, result) => {
-				if (err) reject();
-				resolve(result);
-			}
-		)
-	});
-}
-function returnObject(imagesArray, e) {
-	return new Promise((resolve, reject) => {
-		let object = {
-			id: e.id,
-			profile_img: e.profile_img,
-			nickname: e.nickname,
-			content: e.content,
-			post_type: e.post_type,
-			created_at: e.created_at,
-			images: imagesArray
-		};
-		resolve(object);
-	});
-}
-async function createObject(ret, result) {
-	for (const e of ret) {
-				imagesArray = await pushImages(e.id);
-				// comments = await query.getCommentByPostId(e.post_id);
-        object = await returnObject(imagesArray, e);
-		await result.push(object);
+exports.getPostList = async(req, res) => {
+	try {
+		let result = await query.getPostListByPostType(req.query.post_type);
+		for (let i = 0; i < result.length; i++) {
+			// console.log(result[i].id);
+			result[i].images = await query.getImagesByPostId(result[i].id);
+			result[i].comments = await query.getCommentByPostId(result[i].id);
+			result[i].like_cnt = await query.getLikeCount(result[i].id);
+		}
+		return res.status(200).json({
+			result
+		})
+	} catch (err) {
+		return res.status(406).json({
+			err
+		})
 	}
-	return result;
-}
-async function createPostObject(user_id, req, res) {
-	result = [];
-	conn.query(
-        `SELECT Posts.id, profile_img, post_type, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id WHERE Posts.post_type=${req.query.post_type} ORDER BY Posts.created_at DESC`,
-        async (err, ret) => {
-			if (err) throw err;
-			result = await createObject(ret, result);
-			result.like_cnt = await query.getLikeCount(user_id, post_id);
-			await res.status(200).json({
-				result
-			})
-		}
-	)
-};
-async function createPostObjectAll(user_id, req, res) {
-	result = [];
-	conn.query(
-		`SELECT Posts.id, profile_img, post_type, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id ORDER BY Posts.created_at DESC`,
-		async (err, ret) => {
-			if (err) throw err;
-			result = await createObject(ret, result);
-			await res.status(200).json({
-				result
-			})
-		}
-	)
-};
-
-exports.getPostList = (req, res) => {
-  createPostObject(req.decoded._id, req, res);
 }
 
-exports.getAllPost = (req, res) => {
-	createPostObjectAll(req.decoded._id, req, res);
+exports.getAllPost = async(req, res) => {
+	try {
+		let result = await query.getAllPostList();
+		for (let i = 0; i < result.length; i++) {
+			// console.log(result[i].id);
+			result[i].images = await query.getImagesByPostId(result[i].id);
+			result[i].comments = await query.getCommentByPostId(result[i].id);
+			result[i].like_cnt = await query.getLikeCount(result[i].id);
+		}
+		return res.status(200).json({
+			result
+		})
+	} catch (err) {
+		return res.status(406).json({
+			err
+		})
+	}
 }
 
 exports.createComment = (req, res) => {
