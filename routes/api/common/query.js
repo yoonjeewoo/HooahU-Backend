@@ -4,6 +4,7 @@ const config = require('../../../config');
 const conn = mysql.createConnection(config);
 const crypto = require('crypto');
 
+// GET
 exports.getLikeCount = (post_id) => {
     return new Promise((resolve, reject) => {
         conn.query(
@@ -59,7 +60,7 @@ exports.getUserByEmail = (email) => {
 exports.getPostListByPostType = (post_type) => {
     return new Promise((resolve, reject) => {
         conn.query(
-            `SELECT Posts.id, profile_img, post_type, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id WHERE Posts.post_type=${post_type} ORDER BY Posts.created_at DESC`,
+            `SELECT Posts.id, profile_img, post_type, user_id, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id WHERE Posts.post_type=${post_type} ORDER BY Posts.created_at DESC`,
             (err, result) => {
                 if (err) reject(err);
                 resolve(result);
@@ -71,7 +72,7 @@ exports.getPostListByPostType = (post_type) => {
 exports.getAllPostList = () => {
     return new Promise((resolve, reject) => {
         conn.query(
-            `SELECT Posts.id, profile_img, post_type, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id ORDER BY Posts.created_at DESC`,
+            `SELECT Posts.id, profile_img, post_type, user_id, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id ORDER BY Posts.created_at DESC`,
             (err, result) => {
                 if (err) reject(err);
                 resolve(result);
@@ -104,4 +105,47 @@ exports.getTagsByPostId = (post_id) => {
             }
         )
     })
+}
+
+exports.checkIsLiked = (post_id, user_id) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            "SELECT * FROM Likes WHERE user_id = ? and post_id = ?",
+            [user_id, post_id],
+            (err, result) => {
+                if (err) reject(err);
+                if (result.length == 0) {
+                    resolve(false);
+                } else {
+                    resolve(true);
+                }
+            }
+        )
+    });
+}
+
+exports.increaseLikeCount = (post_id, user_id) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            "INSERT INTO Likes(user_id, post_id) VALUES(?, ?)",
+            [user_id, post_id],
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
+    });
+}
+
+exports.decreaseLikeCount = (post_id, user_id) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            "DELETE FROM Likes WHERE user_id = ? and post_id = ?",
+            [user_id, post_id],
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
+    });
 }

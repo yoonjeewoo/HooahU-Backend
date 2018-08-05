@@ -82,6 +82,7 @@ exports.getPostList = async(req, res) => {
 			result[i].comments = await query.getCommentByPostId(result[i].id);
 			result[i].like_cnt = await query.getLikeCount(result[i].id);
 			result[i].tags = await query.getTagsByPostId(result[i].id);
+			result[i].isLiked = await query.checkIsLiked(result[i].id, req.decoded._id);
 		}
 		return res.status(200).json({
 			result
@@ -102,6 +103,7 @@ exports.getAllPost = async(req, res) => {
 			result[i].comments = await query.getCommentByPostId(result[i].id);
 			result[i].like_cnt = await query.getLikeCount(result[i].id);
 			result[i].tags = await query.getTagsByPostId(result[i].id);
+			result[i].isLiked = await query.checkIsLiked(result[i].id, req.decoded._id);
 		}
 		return res.status(200).json({
 			result
@@ -129,38 +131,27 @@ exports.createComment = (req, res) => {
 }
 
 // 좋아요
-exports.likePost = (req, res) => {
-	const { user_id } = req.decoded._id;
+exports.likePost = async (req, res) => {
 	const { post_id } = req.params;
-	conn.query(
-		"INSERT INTO Likes(user_id, post_id) VALUES(?, ?)",
-		[user_id, post_id],
-		(err) => {
-            if (err) return res.status(406).json({ err });
-            return res.status(200).json({
-                message: 'Successfully liked post'
-            })
-		}
-	)
+	try {
+		await query.increaseLikeCount(post_id, req.decoded._id);
+		return res.status(200).json({
+			message: 'liked successfully'
+		})
+	} catch (err) {
+		return res.status(406).json({ err });
+	}
 }
 
-exports.isLiked = (req, res) => {
-    const { user_id } = req.decoded._id;
-    const { post_id } = req.params;
-    conn.query(
-        "SELECT * FROM Likes WHERE user_id = ? and post_id = ?",
-        [user_id, post_id],
-        (err, result) => {
-            if (err) return res.status(406).json({ err });
-            if (result.length == 0) {
-                return res.status(200).json({
-                    isLiked: false
-                })
-            } else {
-                return res.status(200).json({
-                    isLiked: true
-                })
-            }
-        }
-    )
+// 좋아요 취소
+exports.dislikePost = async (req, res) => {
+	const { post_id } = req.params;
+	try {
+		await query.decreaseLikeCount(post_id, req.decoded._id);
+		return res.status(200).json({
+			message: 'disliked successfully'
+		})
+	} catch (err) {
+		return res.status(406).json({ err });
+	}
 }
