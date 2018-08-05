@@ -48,7 +48,7 @@ exports.createPost = (req, res) => {
 			tags.forEach((tag) => {
 				conn.query('INSERT INTO Tags(post_id, title) VALUES(?, ?)',[result.insertId, tag],(err) => {
 					if (err) throw err;
-					resolve();
+					resolve(result.insertId);
 				})
 			})
 		})
@@ -58,9 +58,9 @@ exports.createPost = (req, res) => {
 		pic_list.forEach(async (pic, index) => {
 			await pic_input(result, pic, index);
 		});
-		await tags_input(result, tags);
+		let newPostId = await tags_input(result, tags);
 		return res.status(200).json({
-			message: 'done'
+			newPostId: newPostId
 		})
 	}
 	conn.query(
