@@ -94,6 +94,27 @@ exports.getPostList = async(req, res) => {
 	}
 }
 
+exports.getUserPost = async(req, res) => {
+	try {
+		let result = await query.getPostListByUserId(req.params.user_id);
+		for (let i = 0; i < result.length; i++) {
+			// console.log(result[i].id);
+			result[i].images = await query.getImagesByPostId(result[i].id);
+			result[i].comments = await query.getCommentByPostId(result[i].id);
+			result[i].like_cnt = await query.getLikeCount(result[i].id);
+			result[i].tags = await query.getTagsByPostId(result[i].id);
+			result[i].isLiked = await query.checkIsLiked(result[i].id, req.decoded._id);
+		}
+		return res.status(200).json({
+			result
+		})
+	} catch (err) {
+		return res.status(406).json({
+			err
+		})
+	}
+}
+
 exports.getAllPost = async(req, res) => {
 	try {
 		let result = await query.getAllPostList();
@@ -121,7 +142,7 @@ exports.createComment = (req, res) => {
 	conn.query(
 		'INSERT INTO Comments(user_id, content, post_id) VALUES(?, ?, ?)',
 		[req.decoded._id, content, post_id],
-		(err, result) => {
+		(err) => {
 			if (err) throw err;
 			return res.status(200).json({
 				message: 'done'
@@ -155,3 +176,4 @@ exports.dislikePost = async (req, res) => {
 		return res.status(406).json({ err });
 	}
 }
+

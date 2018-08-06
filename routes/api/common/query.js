@@ -57,10 +57,35 @@ exports.getUserByEmail = (email) => {
     })
 }
 
+exports.getUserByUserId = (user_id) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            "SELECT * FROM Users WHERE id = ?",
+            [user_id],
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
+    })
+}
+
 exports.getPostListByPostType = (post_type) => {
     return new Promise((resolve, reject) => {
         conn.query(
             `SELECT Posts.id, profile_img, post_type, user_id, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id WHERE Posts.post_type=${post_type} ORDER BY Posts.created_at DESC`,
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
+    })
+}
+
+exports.getPostListByUserId = (user_id) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            `SELECT Posts.id, profile_img, post_type, user_id, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id WHERE Posts.user_id=${user_id} ORDER BY Posts.created_at DESC`,
             (err, result) => {
                 if (err) reject(err);
                 resolve(result);
