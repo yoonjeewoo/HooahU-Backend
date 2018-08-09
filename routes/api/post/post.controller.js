@@ -58,10 +58,16 @@ exports.createPost = (req, res) => {
 		pic_list.forEach(async (pic, index) => {
 			await pic_input(result, pic, index);
 		});
-		let newPostId = await tags_input(result, tags);
-		return res.status(200).json({
-			newPostId: newPostId
-		})
+		if (tags.length!=0) {
+			let newPostId = await tags_input(result, tags);
+			return res.status(200).json({
+				newPostId: newPostId
+			})
+		} else {
+			return res.status(200).json({
+				newPostId: newPostId
+			})
+		}
 	}
 	conn.query(
 		'INSERT INTO Posts(user_id, content, post_type) VALUES(?, ?, ?)',
@@ -126,6 +132,39 @@ exports.getAllPost = async(req, res) => {
 			result[i].tags = await query.getTagsByPostId(result[i].id);
 			result[i].isLiked = await query.checkIsLiked(result[i].id, req.decoded._id);
 		}
+		return res.status(200).json({
+			result
+		})
+	} catch (err) {
+		return res.status(406).json({
+			err
+		})
+	}
+}
+
+exports.getPostListByTagName =  async(req, res) => {
+	try {
+		let result = await query.getPostListByTagName('#'+req.query.title);
+		for (let i = 0; i < result.length; i++) {
+			result[i].images = await query.getImagesByPostId(result[i].post_id);
+			result[i].comments = await query.getCommentByPostId(result[i].post_id);
+			result[i].like_cnt = await query.getLikeCount(result[i].post_id);
+			result[i].tags = await query.getTagsByPostId(result[i].post_id);
+			result[i].isLiked = await query.checkIsLiked(result[i].post_id, req.decoded._id);
+		}
+		return res.status(200).json({
+			result
+		})
+	} catch (err) {
+		return res.status(406).json({
+			err
+		})
+	}
+}
+
+exports.getTagsRanking = async(req, res) => {
+	try {
+		let result = await query.getTagsRanking();
 		return res.status(200).json({
 			result
 		})

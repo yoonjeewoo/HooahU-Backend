@@ -174,3 +174,28 @@ exports.decreaseLikeCount = (post_id, user_id) => {
         )
     });
 }
+
+exports.getPostListByTagName = (title) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            "SELECT * FROM Posts JOIN Tags ON Posts.id = Tags.post_id WHERE Tags.title = ?",
+            [title],
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
+    })
+}
+
+exports.getTagsRanking = () => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            "SELECT title, count(title) as counted_value FROM Posts JOIN Tags ON Posts.id = Tags.post_id GROUP BY title ORDER BY counted_value DESC",
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )       
+    })
+}

@@ -28,3 +28,4 @@ exports.getUserInfoById = async (req, res) => {
 		return res.status(406).json({ err })
 	}
 }
+
