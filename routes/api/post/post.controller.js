@@ -65,7 +65,7 @@ exports.createPost = (req, res) => {
 			})
 		} else {
 			return res.status(200).json({
-				newPostId: newPostId
+				newPostId: result.insertId
 			})
 		}
 	}
