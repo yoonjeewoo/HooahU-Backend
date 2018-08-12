@@ -70,10 +70,10 @@ exports.getUserByUserId = (user_id) => {
     })
 }
 
-exports.getPostListByPostType = (post_type) => {
+exports.getPostListByPostType = (post_type, startIndex) => {
     return new Promise((resolve, reject) => {
         conn.query(
-            `SELECT Posts.id, profile_img, post_type, user_id, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id WHERE Posts.post_type=${post_type} ORDER BY Posts.created_at DESC`,
+            `SELECT Posts.id, profile_img, post_type, user_id, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id WHERE Posts.post_type=${post_type} ORDER BY Posts.created_at DESC LIMIT 20 offset ${parseInt(startIndex)}`,
             (err, result) => {
                 if (err) reject(err);
                 resolve(result);
@@ -94,10 +94,10 @@ exports.getPostListByUserId = (user_id) => {
     })
 }
 
-exports.getAllPostList = () => {
+exports.getAllPostList = (startIndex) => {
     return new Promise((resolve, reject) => {
         conn.query(
-            `SELECT Posts.id, profile_img, post_type, user_id, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id ORDER BY Posts.created_at DESC`,
+            `SELECT Posts.id, profile_img, post_type, user_id, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id ORDER BY Posts.created_at DESC LIMIT 20 OFFSET ${parseInt(startIndex)}`,
             (err, result) => {
                 if (err) reject(err);
                 resolve(result);
@@ -175,11 +175,11 @@ exports.decreaseLikeCount = (post_id, user_id) => {
     });
 }
 
-exports.getPostListByTagName = (title) => {
+exports.getPostListByTagName = (title, startIndex) => {
     return new Promise((resolve, reject) => {
         conn.query(
-            "SELECT * FROM Posts JOIN Tags ON Posts.id = Tags.post_id WHERE Tags.title = ?",
-            [title],
+            "SELECT * FROM Posts JOIN Tags ON Posts.id = Tags.post_id WHERE Tags.title = ? LIMIT 20 OFFSET ?",
+            [title, parseInt(startIndex)],
             (err, result) => {
                 if (err) reject(err);
                 resolve(result);
@@ -199,3 +199,16 @@ exports.getTagsRanking = () => {
         )       
     })
 }  
+
+exports.sendMessage = (from, to, content) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            "INSERT INTO Messages(`from`, `to`, `content`) VALUES(?, ?, ?)",
+            [from, to, content],
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
+    })
+}

@@ -81,7 +81,7 @@ exports.createPost = (req, res) => {
 
 exports.getPostList = async(req, res) => {
 	try {
-		let result = await query.getPostListByPostType(req.query.post_type);
+		let result = await query.getPostListByPostType(req.query.post_type, req.query.index);
 		for (let i = 0; i < result.length; i++) {
 			// console.log(result[i].id);
 			result[i].images = await query.getImagesByPostId(result[i].id);
@@ -91,6 +91,7 @@ exports.getPostList = async(req, res) => {
 			result[i].isLiked = await query.checkIsLiked(result[i].id, req.decoded._id);
 		}
 		return res.status(200).json({
+			nextIndex: parseInt(req.query.index)+20,
 			result
 		})
 	} catch (err) {
@@ -123,7 +124,7 @@ exports.getUserPost = async(req, res) => {
 
 exports.getAllPost = async(req, res) => {
 	try {
-		let result = await query.getAllPostList();
+		let result = await query.getAllPostList(req.query.index);
 		for (let i = 0; i < result.length; i++) {
 			// console.log(result[i].id);
 			result[i].images = await query.getImagesByPostId(result[i].id);
@@ -133,6 +134,7 @@ exports.getAllPost = async(req, res) => {
 			result[i].isLiked = await query.checkIsLiked(result[i].id, req.decoded._id);
 		}
 		return res.status(200).json({
+			nextIndex: parseInt(req.query.index)+20,
 			result
 		})
 	} catch (err) {
@@ -144,15 +146,17 @@ exports.getAllPost = async(req, res) => {
 
 exports.getPostListByTagName =  async(req, res) => {
 	try {
-		let result = await query.getPostListByTagName('#'+req.query.title);
+		let result = await query.getPostListByTagName('#'+req.query.title, req.query.index);
 		for (let i = 0; i < result.length; i++) {
 			result[i].images = await query.getImagesByPostId(result[i].post_id);
 			result[i].comments = await query.getCommentByPostId(result[i].post_id);
 			result[i].like_cnt = await query.getLikeCount(result[i].post_id);
 			result[i].tags = await query.getTagsByPostId(result[i].post_id);
 			result[i].isLiked = await query.checkIsLiked(result[i].post_id, req.decoded._id);
+			result[i].user = await query.getUserByUserId(result[i].user_id);
 		}
 		return res.status(200).json({
+			nextIndex: parseInt(req.query.index)+20,
 			result
 		})
 	} catch (err) {
