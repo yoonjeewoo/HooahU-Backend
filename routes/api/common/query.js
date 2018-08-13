@@ -60,7 +60,7 @@ exports.getUserByEmail = (email) => {
 exports.getUserByUserId = (user_id) => {
     return new Promise((resolve, reject) => {
         conn.query(
-            "SELECT * FROM Users WHERE id = ?",
+            "SELECT id, first_name, last_name, nickname, email, type, c_type, w_type, camp, area, reason, profile_img FROM Users WHERE id = ?",
             [user_id],
             (err, result) => {
                 if (err) reject(err);
@@ -205,6 +205,18 @@ exports.sendMessage = (from, to, content) => {
         conn.query(
             "INSERT INTO Messages(`from`, `to`, `content`) VALUES(?, ?, ?)",
             [from, to, content],
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
+    })
+}
+
+exports.getUsersByTagName = (title) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            `SELECT DISTINCT user_id FROM Posts JOIN Tags ON Posts.id = Tags.post_id WHERE title='${title}'`,
             (err, result) => {
                 if (err) reject(err);
                 resolve(result);

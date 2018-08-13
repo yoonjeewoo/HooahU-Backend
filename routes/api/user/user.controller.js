@@ -29,3 +29,21 @@ exports.getUserInfoById = async (req, res) => {
 	}
 }
 
+exports.getUsersByTagName = async (req, res) => {
+	try {
+        let user_ids = await query.getUsersByTagName('#'+req.query.title);
+        // print(user_ids)
+        let result = [];
+        for (let i = 0; i < user_ids.length; i++) {
+            let user = await query.getUserByUserId(user_ids[i].user_id);
+            // console.log(user)
+            result.push(user[0]);
+        }
+		return res.status(200).json({
+			result
+		})
+	} catch (err) {
+		return res.status(406).json({ err });
+	}
+}
+
