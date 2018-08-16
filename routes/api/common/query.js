@@ -230,7 +230,7 @@ exports.getImagesByTagName = (title, all) => {
         if (parseInt(all) == 1) {
             conn.query(
                 `SELECT * FROM (SELECT Posts.id FROM Posts JOIN Tags ON Posts.id = Tags.post_id WHERE Tags.title = '${title}' ORDER BY created_at DESC) as A \
-                JOIN Images ON A.id = Images.post_id LIMIT 5;`,
+                JOIN Images ON A.id = Images.post_id LIMIT 6;`,
                 (err, result) => {
                     if (err) reject(err);
                     resolve(result);
