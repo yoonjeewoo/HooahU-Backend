@@ -146,7 +146,7 @@ exports.getAllPost = async(req, res) => {
 
 exports.getPostListByTagName =  async(req, res) => {
 	try {
-		let result = await query.getPostListByTagName('#'+req.query.title, req.query.index);
+		let result = await query.getPostListByTagName('#'+req.query.title, req.query.index, req.query.post_type);
 		for (let i = 0; i < result.length; i++) {
 			result[i].images = await query.getImagesByPostId(result[i].post_id);
 			result[i].comments = await query.getCommentByPostId(result[i].post_id);
@@ -220,3 +220,24 @@ exports.dislikePost = async (req, res) => {
 	}
 }
 
+exports.getImagesByTagName = async (req, res) => {
+	try {
+		let result = await query.getImagesByTagName('#'+req.query.title, req.query.all);
+		return res.status(200).json({
+			result
+		})
+	} catch (err) {
+		return res.status(406).json({ err });
+	}
+}
+
+exports.searchTag = async (req, res) => {
+	try {
+		let result = await query.searchTag(req.query.title);
+		return res.status(200).json({
+			result
+		})
+	} catch (err) {
+		return res.status(406).json({ err });
+	}
+}

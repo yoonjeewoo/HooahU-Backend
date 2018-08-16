@@ -175,11 +175,11 @@ exports.decreaseLikeCount = (post_id, user_id) => {
     });
 }
 
-exports.getPostListByTagName = (title, startIndex) => {
+exports.getPostListByTagName = (title, startIndex, post_type) => {
     return new Promise((resolve, reject) => {
         conn.query(
-            "SELECT * FROM Posts JOIN Tags ON Posts.id = Tags.post_id WHERE Tags.title = ? LIMIT 20 OFFSET ?",
-            [title, parseInt(startIndex)],
+            "SELECT * FROM Posts JOIN Tags ON Posts.id = Tags.post_id WHERE Tags.title = ? and post_type = ? LIMIT 20 OFFSET ?",
+            [title, post_type, parseInt(startIndex)],
             (err, result) => {
                 if (err) reject(err);
                 resolve(result);
@@ -223,4 +223,41 @@ exports.getUsersByTagName = (title) => {
             }
         )
     })
+}
+
+exports.getImagesByTagName = (title, all) => {
+    return new Promise((resolve, reject) => {
+        if (parseInt(all) == 1) {
+            conn.query(
+                `SELECT * FROM (SELECT Posts.id FROM Posts JOIN Tags ON Posts.id = Tags.post_id WHERE Tags.title = '${title}' ORDER BY created_at DESC) as A \
+                JOIN Images ON A.id = Images.post_id LIMIT 5;`,
+                (err, result) => {
+                    if (err) reject(err);
+                    resolve(result);
+                }
+            )
+        } else {
+            conn.query(
+                `SELECT * FROM (SELECT Posts.id FROM Posts JOIN Tags ON Posts.id = Tags.post_id WHERE Tags.title = '${title}' ORDER BY created_at DESC) as A \
+                JOIN Images ON A.id = Images.post_id;`,
+                (err, result) => {
+                    if (err) reject(err);
+                    resolve(result);
+                }
+            )
+        }
+    })
+}
+
+exports.searchTag = (query) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            `SELECT Tags.title, count(Tags.title) as C FROM Posts JOIN Tags ON Posts.id = Tags.post_id WHERE Tags.title\
+             LIKE '#${query}%' GROUP BY Tags.title ORDER BY C DESC;`,
+             (err, result) => {
+                 if (err) reject(err);
+                 resolve(result);
+             }
+        )
+    })   
 }

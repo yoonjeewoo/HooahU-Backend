@@ -7,6 +7,7 @@ router.post('', controller.createPost);
 router.get('/all', controller.getAllPost);
 router.get('/tag', controller.getPostListByTagName);
 router.get('/tag/rank', controller.getTagsRanking);
+router.get('/tag/image', controller.getImagesByTagName);
 
 router.get('/user/:user_id', controller.getUserPost);
 
@@ -15,4 +16,5 @@ router.delete('/like/:post_id', controller.dislikePost);
 
 router.post('/comment/:post_id', controller.createComment);
 
+router.get('/search/tag', controller.searchTag);
 module.exports = router;
