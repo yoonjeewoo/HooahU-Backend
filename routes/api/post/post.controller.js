@@ -255,14 +255,18 @@ exports.totalSearch = async (req, res) => {
 		let postList = await query.searchPostByTagName(req.query.title);
 		for (let i = 0; i < postList.length; i++) {
 			let post = await query.getPostByPostId(postList[i].id);
-			if (post.length != 0) {
-				post.images = await query.getImagesByPostId(post.id);
-				post.comments = await query.getCommentByPostId(post.id);
-				post.like_cnt = await query.getLikeCount(post.id);
-				post.tags = await query.getTagsByPostId(post.id);
-				post.isLiked = await query.checkIsLiked(post.id, req.decoded._id);
-				result.push(post);
-			}	
+			console.log(post[0].id);
+			// console.log(post[0].id);
+			// break;
+			// post.id
+			// if (post.length != 0) {
+			// 	post.images = await query.getImagesByPostId(post[0].id);
+			// 	post.comments = await query.getCommentByPostId(post[0].id);
+			// 	post.like_cnt = await query.getLikeCount(post[0].id);
+			// 	post.tags = await query.getTagsByPostId(post[0].id);
+			// 	post.isLiked = await query.checkIsLiked(post[0].id, req.decoded._id);
+			// 	result.push(post);
+			// }	
 		}
 		return res.status(200).json({
 			result
