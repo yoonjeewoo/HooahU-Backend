@@ -29,7 +29,7 @@ exports.register = (req, res) => {
 						},
 						secret,
 						{
-							expiresIn: '7d',
+							expiresIn: '60ms',
 							issuer: 'rebay_admin',
 							subject: 'userInfo'
 						}, (err, token) => {
