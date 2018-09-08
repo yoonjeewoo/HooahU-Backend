@@ -29,7 +29,7 @@ exports.register = (req, res) => {
 						},
 						secret,
 						{
-							expiresIn: '60ms',
+							expiresIn: '60',
 							issuer: 'rebay_admin',
 							subject: 'userInfo'
 						}, (err, token) => {
@@ -69,7 +69,7 @@ exports.login = (req, res) => {
 					},
 					secret,
 					{
-						expiresIn: '7d',
+						expiresIn: '60',
 						issuer: 'rebay_admin',
 						subject: 'userInfo'
 					}, (err, token) => {
