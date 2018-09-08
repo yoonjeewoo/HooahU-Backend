@@ -125,17 +125,26 @@ exports.getUserPost = async(req, res) => {
 exports.getAllPost = async(req, res) => {
 	try {
 		let result = await query.getAllPostList(req.query.index);
+		
 		for (let i = 0; i < result.length; i++) {
-			// console.log(result[i].id);
 			result[i].images = await query.getImagesByPostId(result[i].id);
 			result[i].comments = await query.getCommentByPostId(result[i].id);
 			result[i].like_cnt = await query.getLikeCount(result[i].id);
 			result[i].tags = await query.getTagsByPostId(result[i].id);
 			result[i].isLiked = await query.checkIsLiked(result[i].id, req.decoded._id);
 		}
+
+		let randomPackage = await query.getTwoRandomPackages();
+
+		// result.splice(3,0,randomPackage[0]);
+		// result.splice(7,0, randomPackage[1]);
+		// result.splice(11, 0, randomPackage[2]);
+		// result.splice(15, 0, randomPackage[3]);
+
 		return res.status(200).json({
-			nextIndex: parseInt(req.query.index)+20,
-			result
+			nextIndex: parseInt(req.query.index)+16,
+			result,
+			randomPackage
 		})
 	} catch (err) {
 		return res.status(406).json({

@@ -94,10 +94,30 @@ exports.getPostListByUserId = (user_id) => {
     })
 }
 
+function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+}
+
+exports.getTwoRandomPackages = () => {
+    return new Promise((resolve, reject) => {
+        randomIndex1 = getRandomInt(26) + 1;
+        randomIndex2 = getRandomInt(26) + 1;
+        randomIndex3 = getRandomInt(26) + 1;
+        randomIndex4 = getRandomInt(26) + 1;
+        conn.query(
+            "SELECT * FROM PackageTrip WHERE id = ? or id = ? or id = ? or id = ?",
+            [randomIndex1, randomIndex2, randomIndex3, randomIndex4],
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
+    })
+}
 exports.getAllPostList = (startIndex) => {
     return new Promise((resolve, reject) => {
         conn.query(
-            `SELECT Posts.id, profile_img, post_type, user_id, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id ORDER BY Posts.created_at DESC LIMIT 20 OFFSET ${parseInt(startIndex)}`,
+            `SELECT Posts.id, profile_img, post_type, user_id, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id ORDER BY Posts.created_at DESC LIMIT 16 OFFSET ${parseInt(startIndex)}`,
             (err, result) => {
                 if (err) reject(err);
                 resolve(result);
