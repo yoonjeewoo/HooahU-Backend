@@ -247,3 +247,27 @@ exports.searchTag = async (req, res) => {
 		return res.status(406).json({ err });
 	}
 }
+
+exports.totalSearch = async (req, res) => {
+	console.log(req.query.title);
+	result = []
+	try {
+		let postList = await query.searchPostByTagName(req.query.title);
+		for (let i = 0; i < postList.length; i++) {
+			let post = await query.getPostByPostId(postList[i].id);
+			if (post.length != 0) {
+				post.images = await query.getImagesByPostId(post.id);
+				post.comments = await query.getCommentByPostId(post.id);
+				post.like_cnt = await query.getLikeCount(post.id);
+				post.tags = await query.getTagsByPostId(post.id);
+				post.isLiked = await query.checkIsLiked(post.id, req.decoded._id);
+				result.push(post);
+			}	
+		}
+		return res.status(200).json({
+			result
+		})
+	} catch (err) {
+		return res.status(406).json({ err });
+	}
+}

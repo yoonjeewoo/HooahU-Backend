@@ -114,6 +114,20 @@ exports.getTwoRandomPackages = () => {
         )
     })
 }
+
+exports.getPostByPostId = (post_id) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            "SELECT Posts.id, profile_img, post_type, user_id, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id WHERE Posts.id = ?",
+            [post_id],
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
+    });
+}
+
 exports.getAllPostList = (startIndex) => {
     return new Promise((resolve, reject) => {
         conn.query(
@@ -293,4 +307,16 @@ exports.searchTag = (query) => {
              }
         )
     })   
+}
+
+exports.searchPostByTagName = (tagName) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            `SELECT * FROM Tags WHERE Tags.title='#${tagName}'`,
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
+    })
 }

@@ -17,4 +17,6 @@ router.delete('/like/:post_id', controller.dislikePost);
 router.post('/comment/:post_id', controller.createComment);
 
 router.get('/search/tag', controller.searchTag);
+
+router.get('/search/total', controller.totalSearch);
 module.exports = router;
