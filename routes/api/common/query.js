@@ -126,6 +126,19 @@ exports.getAllPostList = (startIndex) => {
     })
 }
 
+exports.getImageByPackageId = (trip_id) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            `SELECT * FROM PackageImage WHERE trip_id = ?`,
+            [trip_id],
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
+    })
+}
+
 exports.getImagesByPostId = (post_id) => {
     return new Promise((resolve, reject) => {
         conn.query(

@@ -135,12 +135,9 @@ exports.getAllPost = async(req, res) => {
 		}
 
 		let randomPackage = await query.getTwoRandomPackages();
-
-		// result.splice(3,0,randomPackage[0]);
-		// result.splice(7,0, randomPackage[1]);
-		// result.splice(11, 0, randomPackage[2]);
-		// result.splice(15, 0, randomPackage[3]);
-
+		for (let i = 0; i < randomPackage.length; i++) {
+			randomPackage[i].images = await query.getImageByPackageId(randomPackage[i].id);
+		}
 		return res.status(200).json({
 			nextIndex: parseInt(req.query.index)+16,
 			result,
