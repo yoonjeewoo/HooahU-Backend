@@ -248,26 +248,40 @@ exports.searchTag = async (req, res) => {
 	}
 }
 
-exports.totalSearch = async (req, res) => {
-	console.log(req.query.title);
-	result = []
+exports.searchPackageTrip = async (req, res) => {
 	try {
-		let postList = await query.searchPostByTagName(req.query.title);
-		for (let i = 0; i < postList.length; i++) {
-			let post = await query.getPostByPostId(postList[i].id);
-			console.log(post[0].id);
-			// console.log(post[0].id);
-			// break;
-			// post.id
-			// if (post.length != 0) {
-			// 	post.images = await query.getImagesByPostId(post[0].id);
-			// 	post.comments = await query.getCommentByPostId(post[0].id);
-			// 	post.like_cnt = await query.getLikeCount(post[0].id);
-			// 	post.tags = await query.getTagsByPostId(post[0].id);
-			// 	post.isLiked = await query.checkIsLiked(post[0].id, req.decoded._id);
-			// 	result.push(post);
-			// }	
+		let result = await query.getPackageTrip(req.query.title);
+		return res.status(200).json({
+			result
+		})
+	} catch (err) {
+		return res.status(406).json({ err });
+	}
+}
+
+exports.searchTagTotal = async (req, res) => {
+	// let result = [];
+	try {
+		let result = await query.getTagsAndPosts(req.query.title);
+		for (let i = 0; i < result.length; i++) {
+			// console.log(result[i].id);
+			result[i].images = await query.getImagesByPostId(result[i].id);
+			result[i].comments = await query.getCommentByPostId(result[i].id);
+			result[i].like_cnt = await query.getLikeCount(result[i].id);
+			result[i].tags = await query.getTagsByPostId(result[i].id);
+			result[i].isLiked = await query.checkIsLiked(result[i].id, req.decoded._id);
 		}
+		return res.status(200).json({
+			result
+		})
+	} catch (err) {
+		return res.status(406).json({ err });
+	}
+}
+
+exports.searchUsers = async (req, res) => {
+	try {
+		let result = await query.getUserByNickname(req.query.title);
 		return res.status(200).json({
 			result
 		})

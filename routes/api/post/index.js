@@ -18,5 +18,8 @@ router.post('/comment/:post_id', controller.createComment);
 
 router.get('/search/tag', controller.searchTag);
 
-router.get('/search/total', controller.totalSearch);
+router.get('/search/tag/total', controller.searchTagTotal);
+router.get('/search/user', controller.searchUsers);
+router.get('/search/package', controller.searchPackageTrip);
+
 module.exports = router;

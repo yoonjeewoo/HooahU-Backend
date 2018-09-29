@@ -34,8 +34,7 @@ exports.getCommentByPostId = (post_id) => {
 exports.getUserByNickname = (nickname) => {
     return new Promise((resolve, reject) => {
         conn.query(
-            "SELECT * FROM Users WHERE nickname = ?",
-            [nickname],
+            `SELECT * FROM Users WHERE nickname LIKE '${nickname}%'`,
             (err, result) => {
                 if (err) reject();
                 resolve(result);
@@ -307,6 +306,42 @@ exports.searchTag = (query) => {
              }
         )
     })   
+}
+
+exports.getTagsByTitle = (title) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            `SELECT * FROM Tags WHERE title = '#${title}'`,
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
+    })
+}
+
+exports.getTagsAndPosts = (title) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            `SELECT * FROM (SELECT Posts.id, profile_img, post_type, user_id, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id) as A JOIN Tags ON A.id = Tags.post_id WHERE title = '#${title}';`,
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
+    })
+}
+
+exports.getPackageTrip = (title) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            `SELECT * FROM PackageTrip WHERE name LIKE '%${title}%'`,
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
+    })
 }
 
 exports.searchPostByTagName = (tagName) => {
