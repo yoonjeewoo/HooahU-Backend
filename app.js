@@ -4,7 +4,7 @@ const morgan = require('morgan');
 // const mysql = require('mysql');
 const cors = require('cors');
 const config = require('./config');
-
+const query = require('./routes/api/common/query');
 // const conn = mysql.createConnection(config);
 
 /* =======================
@@ -61,6 +61,8 @@ app.set('jwt-secret', config.secret);
 // index page, just for testing
 
 app.use('/api', require('./routes/api'));
+
+
 
 // open the server
 app.listen(port, () => {

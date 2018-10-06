@@ -30,7 +30,7 @@
     "passport-facebook": "^2.1.1",
     "passport-facebook-token": "^3.3.0",
     "path": "^0.12.7",
-    "request": "^2.81.0",
+    "request": "^2.88.0",
     "serve-favicon": "~2.4.2",
     "swagger-ui": "^3.10.0",
     "xml2js": "^0.4.19"

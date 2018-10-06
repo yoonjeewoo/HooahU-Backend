@@ -3,6 +3,7 @@ const mysql = require('mysql');
 const config = require('../../../config');
 const conn = mysql.createConnection(config);
 const crypto = require('crypto');
+const request = require('request');
 
 // GET
 exports.getLikeCount = (post_id) => {
@@ -353,5 +354,18 @@ exports.searchPostByTagName = (tagName) => {
                 resolve(result);
             }
         )
+    })
+}
+
+exports.facebookTokenCheck = (access_token) => {
+    return new Promise((resolve, reject) => {
+        request(`https://graph.facebook.com/me?access_token=${access_token}`, function (error, response, body) {
+            console.log(response)
+            if (response.statusCode != 200) {
+                resolve(false);
+            } else {
+                resolve(JSON.parse(body).id);
+            }
+        });
     })
 }
