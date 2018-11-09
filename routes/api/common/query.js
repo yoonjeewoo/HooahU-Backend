@@ -60,7 +60,7 @@ exports.getUserByEmail = (email) => {
 exports.getUserByUserId = (user_id) => {
     return new Promise((resolve, reject) => {
         conn.query(
-            "SELECT id, first_name, last_name, nickname, email, type, c_type, w_type, camp, area, reason, profile_img FROM Users WHERE id = ?",
+            "SELECT id, fullname, nickname, email, type, c_type, w_type, camp, area, reason, profile_img FROM Users WHERE id = ?",
             [user_id],
             (err, result) => {
                 if (err) reject(err);
