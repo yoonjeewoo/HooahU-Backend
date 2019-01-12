@@ -4,7 +4,9 @@ const config = require('../../../config');
 const conn = mysql.createConnection(config);
 const crypto = require('crypto');
 const request = require('request');
-
+const AWS = require('aws-sdk');
+AWS.config.region = 'ap-northeast-2';
+const s3 = new AWS.S3();
 // GET
 exports.getLikeCount = (post_id) => {
     return new Promise((resolve, reject) => {
@@ -375,6 +377,66 @@ exports.deletePostById = (post_id) => {
         conn.query(
             "DELETE FROM Posts WHERE id = ?",
             [post_id],
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
+    })
+}
+
+exports.updateUserNickname = (nickname, user_id) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            "UPDATE Users SET nickname = ? WHERE id = ?",
+            [nickname, user_id],
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
+    })
+}
+
+exports.updateUserProfileImage = (base64,user_id) => {
+    return new Promise((resolve, reject) => {
+        const d = new Date();
+        d.setUTCHours(d.getUTCHours());
+        
+        const picKey = d.getFullYear() + '_'
+            + d.getMonth() + '_'
+            + d.getDate() + '_'
+            + crypto.randomBytes(20).toString('hex') +
+            + req.decoded._id + '.jpg';
+        const picUrl = `https://s3.ap-northeast-2.amazonaws.com/hooahu/${picKey}`;
+        let buf = new Buffer(base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+        s3.putObject({
+            Bucket: 'hooahu',
+            Key: picKey,
+            Body: buf,
+            ACL: 'public-read'
+        }, function (err, response) {
+            if (err) {
+                if (err) reject(err);
+            } else {
+                conn.query(
+                    "UPDATE Users SET profile_img = ? WHERE id = ?",
+                    [picUrl, user_id],
+                    (err, result) => {
+                        if (err) reject(err);
+                        resolve(result);
+                    }
+                )
+            }
+        });
+    })
+}
+
+exports.updateUserArea = (area, user_id) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            "UPDATE Users SET area = ? WHERE id = ?",
+            [nickname, user_id],
             (err, result) => {
                 if (err) reject(err);
                 resolve(result);

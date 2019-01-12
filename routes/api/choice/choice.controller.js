@@ -46,3 +46,36 @@ exports.deleteCommentByChoiceId = (req, res) => {
 		}
 	)
 }
+exports.isChoiceLiked = (req, res) => {
+    const { choice_id } = req.params;
+    conn.query(
+        "SELECT * FROM ChoiceLikes WHERE user_id = ? and choice_id = ?",
+        [req.decoded._id, choice_id],
+        (err, result) => {
+            if (err) throw err;
+            if (result.length === 0) {
+                return res.status(200).json({
+                    isChoiceLiked: false
+                })
+            } else {
+                return res.status(200).json({
+                    isChoiceLiked: true
+                })
+            }
+        }
+    )
+}
+exports.likeChoice = (req, res) => {
+    const { choice_id } = req.params;
+    conn.query(
+        "INSERT INTO ChoiceLikes(choice_id, user_id) VALUES(?, ?)",
+        [choice_id, req.decoded._id],
+        (err, result) => {
+            if (err) throw err;
+            return res.status(200).json({
+                message: 'success'
+            })
+        }
+    )
+}
+
