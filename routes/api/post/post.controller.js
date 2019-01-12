@@ -79,6 +79,21 @@ exports.createPost = (req, res) => {
 	)
 }
 
+exports.deletePost = async(req, res) => {
+    const { post_id } = req.params;
+    try {
+        let result = await query.deletePostById(post_id);
+        return res.status(200).json({
+            message: "post deleted successfully"
+        })
+    } catch (err) {
+        return res.status(406).json({
+            err
+        })
+    }
+    
+}
+
 exports.getPostList = async(req, res) => {
 	try {
 		let result = await query.getPostListByPostType(req.query.post_type, req.query.index);

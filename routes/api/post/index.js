@@ -4,6 +4,7 @@ const controller = require('./post.controller');
 
 router.get('', controller.getPostList);
 router.post('', controller.createPost);
+router.post('/delete/:post_id', controller.deletePost);
 router.get('/all', controller.getAllPost);
 router.get('/tag', controller.getPostListByTagName);
 router.get('/tag/rank', controller.getTagsRanking);

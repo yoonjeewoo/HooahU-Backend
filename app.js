@@ -1,25 +1,23 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
-// const mysql = require('mysql');
 const cors = require('cors');
 const config = require('./config');
 const query = require('./routes/api/common/query');
-// const conn = mysql.createConnection(config);
 
 /* =======================
  LOAD THE CONFIG
  ==========================*/
+
 const port = process.env.PORT || 3000;
 
 /* =======================
  EXPRESS CONFIGURATION
  ==========================*/
+
 const app = express();
 app.use(cors())
-// process.on('uncaughtException', function(err) {
-// 	console.log('Caught exception: ' + err);
-// });
+
 app.use(function (req, res, next) {
 	res.header('Access-Control-Allow-Origin', '*');
 	res.header('Access-Control-Allow-Methods', '*');

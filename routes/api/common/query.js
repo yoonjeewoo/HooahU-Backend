@@ -60,7 +60,7 @@ exports.getUserByEmail = (email) => {
 exports.getUserByUserId = (user_id) => {
     return new Promise((resolve, reject) => {
         conn.query(
-            "SELECT id, fullname, nickname, email, type, c_type, w_type, camp, area, reason, profile_img FROM Users WHERE id = ?",
+            "SELECT id, full_name, nickname, email, type, c_type, w_type, camp, area, reason, profile_img FROM Users WHERE id = ?",
             [user_id],
             (err, result) => {
                 if (err) reject(err);
@@ -367,5 +367,18 @@ exports.facebookTokenCheck = (access_token) => {
                 resolve(JSON.parse(body).id);
             }
         });
+    })
+}
+
+exports.deletePostById = (post_id) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            "DELETE FROM Posts WHERE id = ?",
+            [post_id],
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
     })
 }
