@@ -436,7 +436,7 @@ exports.updateUserArea = (area, user_id) => {
     return new Promise((resolve, reject) => {
         conn.query(
             "UPDATE Users SET area = ? WHERE id = ?",
-            [nickname, user_id],
+            [area, user_id],
             (err, result) => {
                 if (err) reject(err);
                 resolve(result);

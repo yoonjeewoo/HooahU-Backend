@@ -94,3 +94,17 @@ exports.likeChoice = (req, res) => {
     )
 }
 
+exports.dislikeChoice = (req, res) => {
+    const { choice_id } = req.params;
+    conn.query(
+        "DELETE FROM ChoiceLikes WHERE user_id = ? and choice_id = ?",
+        [req.decoded._id, choice_id],
+        (err, result) => {
+            if (err) return res.status(406).json({ err });
+            return res.status(200).json({
+                message: 'success'
+            })
+        }
+    )
+}
+
