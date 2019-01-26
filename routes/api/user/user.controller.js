@@ -48,11 +48,11 @@ exports.getUsersByTagName = async (req, res) => {
 }
 
 exports.updateProfile = async (req, res) => {
-	const { nickname, area, base64 } = req.body;
+	const { nickname, area } = req.body;
 	try {
 		await query.updateUserNickname(nickname, req.decoded._id);
 		await query.updateUserArea(area, req.decoded._id);
-		await query.updateUserProfileImage(base64, req.decoded._id);
+		// await query.updateUserProfileImage(base64, req.decoded._id);
 		return res.status(200).json({
 			message: "updated user profile successfully"
 		})
