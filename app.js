@@ -31,7 +31,7 @@ app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:500
 
 app.use(express.static('apidoc'));
 app.get('/', (req, res) => {
-	res.send('Welcome! This is Backend Main Server for hooahu.com')
+	res.send('index.html')
 });
 // print the request log on console
 app.use(morgan(':remote-addr'), function (req, res, next) {
