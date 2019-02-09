@@ -68,7 +68,7 @@ exports.updatePassword = async (req, res) => {
 		let checked = await query.checkPassword(old_pass, req.decoded._id);
 		if (checked.length === 0) {
 			return res.status(200).json({
-				message: "password is wrong"
+				message: "password_is_wrong"
 			})
 		} else {
 			await query.updatePassword(old_pass, new_pass, req.decoded._id);
