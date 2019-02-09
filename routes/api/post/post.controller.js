@@ -96,19 +96,36 @@ exports.deletePost = async(req, res) => {
 
 exports.getPostList = async(req, res) => {
 	try {
-		let result = await query.getPostListByPostType(req.query.post_type, req.query.index);
-		for (let i = 0; i < result.length; i++) {
-			// console.log(result[i].id);
-			result[i].images = await query.getImagesByPostId(result[i].id);
-			result[i].comments = await query.getCommentByPostId(result[i].id);
-			result[i].like_cnt = await query.getLikeCount(result[i].id);
-			result[i].tags = await query.getTagsByPostId(result[i].id);
-			result[i].isLiked = await query.checkIsLiked(result[i].id, req.decoded._id);
+		if (req.query.rank) {
+			let result = await query.getPostListByPostTypeByLike(req.query.post_type, req.query.index);
+			for (let i = 0; i < result.length; i++) {
+				// console.log(result[i].id);
+				result[i].images = await query.getImagesByPostId(result[i].id);
+				result[i].comments = await query.getCommentByPostId(result[i].id);
+				result[i].like_cnt = await query.getLikeCount(result[i].id);
+				result[i].tags = await query.getTagsByPostId(result[i].id);
+				result[i].isLiked = await query.checkIsLiked(result[i].id, req.decoded._id);
+			}
+			return res.status(200).json({
+				nextIndex: parseInt(req.query.index) + 20,
+				result
+			})
+		} else {
+			let result = await query.getPostListByPostType(req.query.post_type, req.query.index);
+			for (let i = 0; i < result.length; i++) {
+				// console.log(result[i].id);
+				result[i].images = await query.getImagesByPostId(result[i].id);
+				result[i].comments = await query.getCommentByPostId(result[i].id);
+				result[i].like_cnt = await query.getLikeCount(result[i].id);
+				result[i].tags = await query.getTagsByPostId(result[i].id);
+				result[i].isLiked = await query.checkIsLiked(result[i].id, req.decoded._id);
+			}
+			return res.status(200).json({
+				nextIndex: parseInt(req.query.index) + 20,
+				result
+			})
 		}
-		return res.status(200).json({
-			nextIndex: parseInt(req.query.index)+20,
-			result
-		})
+		
 	} catch (err) {
 		return res.status(406).json({
 			err
@@ -139,25 +156,48 @@ exports.getUserPost = async(req, res) => {
 
 exports.getAllPost = async(req, res) => {
 	try {
-		let result = await query.getAllPostList(req.query.index);
-		
-		for (let i = 0; i < result.length; i++) {
-			result[i].images = await query.getImagesByPostId(result[i].id);
-			result[i].comments = await query.getCommentByPostId(result[i].id);
-			result[i].like_cnt = await query.getLikeCount(result[i].id);
-			result[i].tags = await query.getTagsByPostId(result[i].id);
-			result[i].isLiked = await query.checkIsLiked(result[i].id, req.decoded._id);
-		}
+		if (req.query.rank) {
+			let result = await query.getAllPostListByLike(req.query.index);
 
-		// let randomPackage = await query.getTwoRandomPackages();
-		// for (let i = 0; i < randomPackage.length; i++) {
-		// 	randomPackage[i].images = await query.getImageByPackageId(randomPackage[i].id);
-		// }
-		return res.status(200).json({
-			nextIndex: parseInt(req.query.index)+20,
-			result
-			// randomPackage
-		})
+			for (let i = 0; i < result.length; i++) {
+				result[i].images = await query.getImagesByPostId(result[i].id);
+				result[i].comments = await query.getCommentByPostId(result[i].id);
+				result[i].like_cnt = await query.getLikeCount(result[i].id);
+				result[i].tags = await query.getTagsByPostId(result[i].id);
+				result[i].isLiked = await query.checkIsLiked(result[i].id, req.decoded._id);
+			}
+
+			// let randomPackage = await query.getTwoRandomPackages();
+			// for (let i = 0; i < randomPackage.length; i++) {
+			// 	randomPackage[i].images = await query.getImageByPackageId(randomPackage[i].id);
+			// }
+			return res.status(200).json({
+				nextIndex: parseInt(req.query.index) + 20,
+				result
+				// randomPackage
+			})
+		} else {
+			let result = await query.getAllPostList(req.query.index);
+
+			for (let i = 0; i < result.length; i++) {
+				result[i].images = await query.getImagesByPostId(result[i].id);
+				result[i].comments = await query.getCommentByPostId(result[i].id);
+				result[i].like_cnt = await query.getLikeCount(result[i].id);
+				result[i].tags = await query.getTagsByPostId(result[i].id);
+				result[i].isLiked = await query.checkIsLiked(result[i].id, req.decoded._id);
+			}
+
+			// let randomPackage = await query.getTwoRandomPackages();
+			// for (let i = 0; i < randomPackage.length; i++) {
+			// 	randomPackage[i].images = await query.getImageByPackageId(randomPackage[i].id);
+			// }
+			return res.status(200).json({
+				nextIndex: parseInt(req.query.index) + 20,
+				result
+				// randomPackage
+			})
+		}
+		
 	} catch (err) {
 		return res.status(406).json({
 			err
