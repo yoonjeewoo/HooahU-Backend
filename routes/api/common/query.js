@@ -444,3 +444,37 @@ exports.updateUserArea = (area, user_id) => {
         )
     })
 }
+
+exports.checkPassword = (password, user_id) => {
+    return new Promise((resolve, reject) => {
+        const encrypted = crypto.createHmac('sha1', config.secret)
+            .update(password)
+            .digest('base64');
+        conn.query(
+            `SELECT * FROM Users WHERE id = ${user_id} and password = '${encrypted}'`,
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
+    });
+}
+
+exports.updatePassword = (old_pass, new_pass, user_id) => {
+    return new Promise((resolve, reject) => {
+        const old_encrypted = crypto.createHmac('sha1', config.secret)
+            .update(old_pass)
+            .digest('base64');
+        const new_encrypted = crypto.createHmac('sha1', config.secret)
+            .update(new_pass)
+            .digest('base64');
+        conn.query(
+            "UPDATE Users SET password = ? WHERE id = ? and password = ?",
+            [new_encrypted, user_id, old_encrypted],
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+            }
+        )
+    })
+}

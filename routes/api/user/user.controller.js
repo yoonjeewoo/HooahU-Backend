@@ -60,3 +60,23 @@ exports.updateProfile = async (req, res) => {
 		return res.status(406).json({ err });
 	}
 }
+
+exports.updatePassword = async (req, res) => {
+	const { old_pass, new_pass } = req.body;
+	
+	try {
+		let checked = await query.checkPassword(old_pass, req.decoded._id);
+		if (checked.length === 0) {
+			return res.status(200).json({
+				message: "password is wrong"
+			})
+		} else {
+			await query.updatePassword(old_pass, new_pass, req.decoded._id);
+			return res.status(200).json({
+				message: "updated user profile successfully"
+			})
+		}
+	} catch (err) {
+		return res.status(406).json({ err });
+	}
+}

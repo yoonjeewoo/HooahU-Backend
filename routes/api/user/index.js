@@ -6,6 +6,7 @@ router.get('/info/:user_id', controller.getUserInfoById);
 router.get('/tag', controller.getUsersByTagName);
 
 router.post('/update/profile', controller.updateProfile);
+router.post('/update/password', controller.updatePassword);
 // router.
 
 module.exports = router;
