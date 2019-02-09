@@ -149,14 +149,14 @@ exports.getAllPost = async(req, res) => {
 			result[i].isLiked = await query.checkIsLiked(result[i].id, req.decoded._id);
 		}
 
-		let randomPackage = await query.getTwoRandomPackages();
-		for (let i = 0; i < randomPackage.length; i++) {
-			randomPackage[i].images = await query.getImageByPackageId(randomPackage[i].id);
-		}
+		// let randomPackage = await query.getTwoRandomPackages();
+		// for (let i = 0; i < randomPackage.length; i++) {
+		// 	randomPackage[i].images = await query.getImageByPackageId(randomPackage[i].id);
+		// }
 		return res.status(200).json({
 			nextIndex: parseInt(req.query.index)+20,
-			result,
-			randomPackage
+			result
+			// randomPackage
 		})
 	} catch (err) {
 		return res.status(406).json({
