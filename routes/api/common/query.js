@@ -215,13 +215,14 @@ exports.increaseLikeCount = (post_id, user_id) => {
         conn.query(
             "INSERT INTO Likes(user_id, post_id) VALUES(?, ?)",
             [user_id, post_id],
-            (err, result) => {
+            (err) => {
                 if (err) reject(err);
                 conn.query(
                     "UPDATE Posts SET like_cnt = like_cnt + 1 WHERE id = ?",
                     [post_id],
-                    (err) => {
-
+                    (err, result) => {
+                        if (err) reject(err);
+                        resolve(result);
                     }
                 )
             }
@@ -234,9 +235,16 @@ exports.decreaseLikeCount = (post_id, user_id) => {
         conn.query(
             "DELETE FROM Likes WHERE user_id = ? and post_id = ?",
             [user_id, post_id],
-            (err, result) => {
+            (err) => {
                 if (err) reject(err);
-                resolve(result);
+                conn.query(
+                    "UPDATE Posts SET like_cnt = like_cnt - 1 WHERE id = ?",
+                    [post_id],
+                    (err, result) => {
+                        if (err) reject(err);
+                        resolve(result);
+                    }
+                )
             }
         )
     });
