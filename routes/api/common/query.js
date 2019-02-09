@@ -87,7 +87,7 @@ exports.getPostListByPostType = (post_type, startIndex) => {
 exports.getPostListByPostTypeByLike = (post_type, startIndex) => {
     return new Promise((resolve, reject) => {
         conn.query(
-            `SELECT Posts.id, profile_img, post_type, user_id, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id WHERE Posts.post_type=${post_type} ORDER BY Posts.like_cnt DESC LIMIT 20 offset ${parseInt(startIndex)}`,
+            `SELECT Posts.id, profile_img, post_type, user_id, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id WHERE Posts.post_type=${post_type} ORDER BY Posts.like_cnt DESC, Posts.created_at DESC LIMIT 20 offset ${parseInt(startIndex)}`,
             (err, result) => {
                 if (err) reject(err);
                 resolve(result);
@@ -157,7 +157,7 @@ exports.getAllPostList = (startIndex) => {
 exports.getAllPostListByLike = (startIndex) => {
     return new Promise((resolve, reject) => {
         conn.query(
-            `SELECT Posts.id, profile_img, post_type, user_id, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id ORDER BY Posts.like_cnt DESC LIMIT 20 OFFSET ${parseInt(startIndex)}`,
+            `SELECT Posts.id, profile_img, post_type, user_id, nickname, Posts.content, Posts.created_at FROM Posts join Users on Posts.user_id = Users.id ORDER BY Posts.like_cnt DESC, Posts.created_at DESC LIMIT 20 OFFSET ${parseInt(startIndex)}`,
             (err, result) => {
                 if (err) reject(err);
                 resolve(result);
