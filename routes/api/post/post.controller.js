@@ -154,7 +154,7 @@ exports.getAllPost = async(req, res) => {
 			randomPackage[i].images = await query.getImageByPackageId(randomPackage[i].id);
 		}
 		return res.status(200).json({
-			nextIndex: parseInt(req.query.index)+16,
+			nextIndex: parseInt(req.query.index)+20,
 			result,
 			randomPackage
 		})
