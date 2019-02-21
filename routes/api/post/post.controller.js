@@ -96,7 +96,7 @@ exports.deletePost = async(req, res) => {
 
 exports.getPostList = async(req, res) => {
 	try {
-		if (req.query.rank) {
+		if (req.query.rank ===1) {
 			let result = await query.getPostListByPostTypeByLike(req.query.post_type, req.query.index);
 			for (let i = 0; i < result.length; i++) {
 				// console.log(result[i].id);
@@ -156,7 +156,7 @@ exports.getUserPost = async(req, res) => {
 
 exports.getAllPost = async(req, res) => {
 	try {
-		if (req.query.rank) {
+		if (req.query.rank === 1) {
 			let result = await query.getAllPostListByLike(req.query.index);
 
 			for (let i = 0; i < result.length; i++) {
