@@ -436,37 +436,42 @@ exports.updateUserNickname = (nickname, user_id) => {
     })
 }
 
-exports.updateUserProfileImage = (base64,user_id) => {
+exports.updateUserProfileImage = (base64, user_id) => {
+    
     return new Promise((resolve, reject) => {
         const d = new Date();
         d.setUTCHours(d.getUTCHours());
-        
         const picKey = d.getFullYear() + '_'
             + d.getMonth() + '_'
             + d.getDate() + '_'
             + crypto.randomBytes(20).toString('hex') +
             + req.decoded._id + '.jpg';
         const picUrl = `https://s3.ap-northeast-2.amazonaws.com/hooahu/${picKey}`;
-        let buf = new Buffer(base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-        s3.putObject({
-            Bucket: 'hooahu',
-            Key: picKey,
-            Body: buf,
-            ACL: 'public-read'
-        }, function (err, response) {
-            if (err) {
-                if (err) reject(err);
-            } else {
-                conn.query(
-                    "UPDATE Users SET profile_img = ? WHERE id = ?",
-                    [picUrl, user_id],
-                    (err, result) => {
-                        if (err) reject(err);
-                        resolve(result);
-                    }
-                )
-            }
-        });
+        
+        resolve(picUrl);
+        // let buf = new Buffer(base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+        // s3.putObject({
+        //     Bucket: 'hooahu',
+        //     Key: picKey,
+        //     Body: buf,
+        //     ACL: 'public-read'
+        // }, function (err, response) {
+        //     if (err) {
+        //         console.log(err)
+        //         // if (err) reject(err);
+        //     } else {
+        //         console.log(response)
+        //         // conn.query(
+        //         //     "UPDATE Users SET profile_img = ? WHERE id = ?",
+        //         //     [picUrl, user_id],
+        //         //     (err, result) => {
+        //         //         if (err) reject(err);
+        //         //         resolve(result);
+        //         //     }
+        //         // )
+        //         // resolve(response);
+        //     }
+        // });
     })
 }
 

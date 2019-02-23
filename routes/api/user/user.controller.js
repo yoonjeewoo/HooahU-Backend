@@ -4,7 +4,9 @@ const mysql = require('mysql');
 const config = require('../../../config');
 const conn = mysql.createConnection(config);
 const query = require('../common/query');
-
+const AWS = require('aws-sdk');
+AWS.config.region = 'ap-northeast-2';
+const s3 = new AWS.S3();
 exports.getUserInfo = (req, res) => {
 	conn.query(
 		'SELECT * FROM Users WHERE id=?',
@@ -60,7 +62,40 @@ exports.updateProfile = async (req, res) => {
 		return res.status(406).json({ err });
 	}
 }
-
+exports.updateProfileImage = async (req, res) => {
+	const { base64 } = req.body;
+	const user_id = req.decoded._id;
+	const d = new Date();
+	d.setUTCHours(d.getUTCHours());
+	const picKey = d.getFullYear() + '_'
+		+ d.getMonth() + '_'
+		+ d.getDate() + '_'
+		+ crypto.randomBytes(20).toString('hex') +
+		+ req.decoded._id + '.jpg';
+	const picUrl = `https://s3.ap-northeast-2.amazonaws.com/hooahu/${picKey}`;
+	let buf = new Buffer(base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+	s3.putObject({
+			Bucket: 'hooahu',
+			Key: picKey,
+			Body: buf,
+			ACL: 'public-read'
+	}, function (err) {
+			if (err) {
+				return res.status(406).json({err});
+			} else {
+					conn.query(
+					    "UPDATE Users SET profile_img = ? WHERE id = ?",
+					    [picUrl, user_id],
+					    (err, result) => {
+								if (err) return res.status(406).json({ err });
+								return res.status(200).json({
+                  message: "profile image successfully updated"
+                });
+					    }
+					)
+			}
+	});
+}
 exports.updatePassword = async (req, res) => {
 	const { old_pass, new_pass } = req.body;
 	
@@ -80,3 +115,4 @@ exports.updatePassword = async (req, res) => {
 		return res.status(406).json({ err });
 	}
 }
+
