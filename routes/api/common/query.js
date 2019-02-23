@@ -521,3 +521,33 @@ exports.updatePassword = (old_pass, new_pass, user_id) => {
         )
     })
 }
+
+//////////////
+// Comments //
+//////////////
+
+exports.getCommentByCommentId = (comment_id) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            "SELECT * FROM Comments WHERE id = ?",
+            [comment_id],
+            (err, result) => {
+                if (err) reject(err);
+                resolve(result[0]);
+            }
+        )
+    })  
+}
+
+exports.deleteCommentByCommentId = async(comment_id, user_id) => {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            "DELETE FROM Comments WHERE id = ? and user_id = ?",
+            [comment_id, user_id],
+            (err, result) => {
+                if (err) reject (err);
+                resolve(result);
+            }
+        )
+    })
+}

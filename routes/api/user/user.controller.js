@@ -89,7 +89,7 @@ exports.updateProfileImage = async (req, res) => {
 					    (err, result) => {
 								if (err) return res.status(406).json({ err });
 								return res.status(200).json({
-                  message: "profile image successfully updated"
+                  message: picUrl
                 });
 					    }
 					)

@@ -344,3 +344,22 @@ exports.searchUsers = async (req, res) => {
 		return res.status(406).json({ err });
 	}
 }
+
+exports.deleteCommentByCommentId = async (req, res) => {
+	try {
+		let result = await query.deleteCommentByCommentId(req.params.comment_id, req.decoded._id);
+		// console.log(result.affectedRows == 0);
+		if (result.affectedRows != 0) {
+			return res.status(200).json({
+				message: "delete success"
+			})
+		} else {
+			return res.status(200).json({
+				message: "delete fail"
+			})
+		}
+		
+	} catch (err) {
+		return res.status(406).json({ err });
+	}
+}

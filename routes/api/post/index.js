@@ -15,6 +15,7 @@ router.get('/user/:user_id', controller.getUserPost);
 router.post('/like/:post_id', controller.likePost);
 router.delete('/like/:post_id', controller.dislikePost);
 
+router.delete('/comment/:comment_id', controller.deleteCommentByCommentId);
 router.post('/comment/:post_id', controller.createComment);
 
 router.get('/search/tag', controller.searchTag);
