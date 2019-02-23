@@ -25,8 +25,8 @@ app.use(function (req, res, next) {
 	next();
 });
 // parse JSON and url-encoded query
-app.use(bodyParser.json({limit: "50mb"}));
-app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
+app.use(bodyParser.json({limit: "100mb"}));
+app.use(bodyParser.urlencoded({limit: "100mb", extended: true, parameterLimit:50000}));
 
 
 app.use(express.static('apidoc'));
